@@ -35,4 +35,9 @@ like this:
 Resource Component (Archival Object) records have a new field
 'RMS Import Stamp' (rms_import_stamp). A value in this field is used
 to identify a batch of imported records. The importer sets the value to
-today's date (YYYY-MM-DD). This value is indexed.
+today's date (YYYY-MM-DD). This value is indexed, allowing a search like this:
+
+      rms_import_stamp_u_sstr:2015-10-24
+
+To return all records imported on October 24, 2015.
+
