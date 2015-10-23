@@ -30,8 +30,9 @@ like this:
 
 ## How to use it
 
-### RMS Import Date
+### RMS Import Stamp
 
 Resource Component (Archival Object) records have a new field
-'RMS Import Date' (rms_import_date). A date in this field indicates
-the day that the record was imported from Records Management.
+'RMS Import Stamp' (rms_import_stamp). A value in this field is used
+to identify a batch of imported records. The importer sets the value to
+today's date (YYYY-MM-DD). This value is indexed.

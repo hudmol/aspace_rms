@@ -1,3 +1,3 @@
 {
-  "rms_import_date" => {"type" => "date", "required" => false},
+  "rms_import_stamp" => {"type" => "string", "required" => false},
 }
