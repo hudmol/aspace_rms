@@ -47,6 +47,9 @@ class RMExportConverter < Converter
     box_sheet = nil
     file_sheet = nil
 
+    box_uris = {}
+    resource_uris = {}
+
     rms_import_date = Date.today.strftime('%Y-%m-%d')
 
     Zip::File.open(@input_file) do |zip_file|
@@ -67,6 +70,8 @@ class RMExportConverter < Converter
       raise "Zip file must contain files with names ending in 'ArchBoxExport.xlsx' and 'ArchFileExport.xlsx'"
     end
 
+
+    # boxes
     rows = box_sheet.enum_for(:each)
     headers = row_values(rows.next)
     # box headers: ["Orig_SERN", "BOXN", "Box Location", "BOXNAME", "BEGINDATE", "ENDDDATE"]
@@ -137,9 +142,13 @@ class RMExportConverter < Converter
           }
         }
 
+        uri = "/repositories/12345/archival_objects/import_#{SecureRandom.hex}"
+        box_uris[values_map["BOXN"]] = uri
+        resource_uris[values_map["BOXN"]] = JSONModel::JSONModel(:resource).uri_for(parent.root_record_id, :repo_id => parent.repo_id)
+
         ao_json = JSONModel::JSONModel(:archival_object).
           from_hash({
-                      :uri => "/repositories/12345/archival_objects/import_#{SecureRandom.hex}",
+                      :uri => uri,
                       :title => values_map["BOXNAME"],
                       :level => "otherlevel",
                       :other_level => "box",
@@ -147,7 +156,7 @@ class RMExportConverter < Converter
                       :dates => [date],
                       :instances => [instance],
                       :parent => {:ref => JSONModel::JSONModel(:archival_object).uri_for(parent.id, :repo_id => parent.repo_id)},
-                      :resource => {:ref => JSONModel::JSONModel(:resource).uri_for(parent.root_record_id, :repo_id => parent.repo_id)},
+                      :resource => {:ref => resource_uris[values_map["BOXN"]]},
                       :rms_import_date => rms_import_date,
                     })
 
@@ -158,10 +167,37 @@ class RMExportConverter < Converter
     end
 
 
-#    rows = file_sheet.enum_for(:each)
-#    headers = row_values(rows.next)
+    # files
+    rows = file_sheet.enum_for(:each)
+    headers = row_values(rows.next)
     # file headers: ["BOXN", "FILN", "FILNAME"]
-#    puts "file headers: #{headers.inspect}"
+
+    begin
+      while(row = rows.next)
+        values = row_values(row)
+
+        next if values.compact.empty?
+
+        values_map = Hash[headers.zip(values)]
+
+        external_id = {
+          :source => AppConfig[:container_management_rms_source],
+          :external_id => values_map["FILN"],
+        }
+
+        @batch << JSONModel::JSONModel(:archival_object).
+          from_hash({
+                      :uri => "/repositories/12345/archival_objects/import_#{SecureRandom.hex}",
+                      :title => values_map["FILNAME"],
+                      :level => "file",
+                      :external_ids => [external_id],
+                      :parent => {:ref => box_uris[values_map["BOXN"]]},
+                      :resource => {:ref => resource_uris[values_map["BOXN"]]},
+                      :rms_import_date => rms_import_date,
+                    })
+      end
+    rescue StopIteration
+    end
 
   end
 
@@ -175,6 +211,12 @@ class RMExportConverter < Converter
     p "=================="
 
     output_path
+  end
+
+  private
+
+  def row_values(row)
+    (0...row.size).map {|i| (row[i] && row[i].value) ? row[i].value.to_s.strip : nil}
   end
 
 end
