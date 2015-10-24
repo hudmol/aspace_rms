@@ -38,6 +38,9 @@ class RMExportConverter < Converter
 
 
   def run
+
+    permit_partial = AppConfig.has_key?(:records_management_import_permit_partial) && AppConfig[:records_management_import_permit_partial]
+
     now = java.lang.System.currentTimeMillis
     box_file = File.join(Dir.tmpdir, "rm_export_box_#{now}")
     file_file = File.join(Dir.tmpdir, "rm_export_file_#{now}")
@@ -92,10 +95,14 @@ class RMExportConverter < Converter
             where(:external_id => values_map["Orig_SERN"],
                   :source => AppConfig[:container_management_rms_source]).first
           if ext_id.nil?
-#            raise "No archival_object found with external_id of #{values_map["Orig_SERN"]}"
-            p "NO Archival Object with #{values_map["Orig_SERN"]}, skipping ..."
-            next
+            if permit_partial
+              p "No series Archival Object with #{values_map["Orig_SERN"]} for Box #{values_map["BOXN"]}, skipping ..."
+              next
+            else
+              raise "No series archival_object found with external_id of #{values_map["Orig_SERN"]} for Box #{values_map["BOXN"]}"
+            end
           end
+          # remember the archival_object for this Orig_SERN
           parent_aos[values_map["Orig_SERN"]] = ArchivalObject[ext_id[:archival_object_id]]
         end
 
@@ -142,6 +149,7 @@ class RMExportConverter < Converter
           }
         }
 
+        # remember the uri for this box and its resource so we can ref them when creating file records
         uri = "/repositories/12345/archival_objects/import_#{SecureRandom.hex}"
         box_uris[values_map["BOXN"]] = uri
         resource_uris[values_map["BOXN"]] = JSONModel::JSONModel(:resource).uri_for(parent.root_record_id, :repo_id => parent.repo_id)
@@ -179,6 +187,15 @@ class RMExportConverter < Converter
         next if values.compact.empty?
 
         values_map = Hash[headers.zip(values)]
+
+        unless box_uris[values_map["BOXN"]]
+          if permit_partial
+            p "No Box Archival Object with #{values_map["BOXN"]} for File #{values_map["FILN"]}, skipping ..."
+            next
+          else
+            raise "No box archival_object found with external_id of #{values_map["BOXN"]} found for file #{values_map["FILN"]}"
+          end
+        end
 
         external_id = {
           :source => AppConfig[:container_management_rms_source],

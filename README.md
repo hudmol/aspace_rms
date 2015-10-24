@@ -73,7 +73,12 @@ The value matched in external_id.source is taken from config, for example:
 
       AppConfig[:container_management_rms_source] = "RMS"
 
-If no archival_object is found with an external_id of *Orig_SERN*, then the row will be skipped. 
+If no archival_object is found with an external_id of *Orig_SERN*, then the entire import will be aborted
+To allow partial imports, set the following in config.rb:
+
+      AppConfig[:records_management_import_permit_partial] = true
+
+This will cause the row to be skipped, but allow the import to continue.
 
 If no location is found with coordinate_1_indicator of *Box Location*, then a new location will be created:
 
@@ -93,6 +98,13 @@ Rows from the File file will be imported as archival_objects value the following
       resource:          {ref: the same resource as the parent}
       external_ids:      [{source: container_management_rms_source, external_id: *FILN*}]
       rms_import_batch:  today as YYYY-MM-DD
+
+If there is no Box corresponding to *BOXN*, then the entire import will be aborted
+To allow partial imports, set the following in config.rb:
+
+      AppConfig[:records_management_import_permit_partial] = true
+
+This will cause the row to be skipped, but allow the import to continue.
 
 
 ### External IDs are editable
