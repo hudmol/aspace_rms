@@ -4,7 +4,7 @@ Sequel.migration do
 
   up do
     alter_table(:archival_object) do
-      add_column(:rms_import_stamp, String, :null => true)
+      add_column(:rms_import_batch, String, :null => true)
     end
   end
 

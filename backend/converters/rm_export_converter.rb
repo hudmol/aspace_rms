@@ -50,7 +50,7 @@ class RMExportConverter < Converter
     box_uris = {}
     resource_uris = {}
 
-    rms_import_stamp = Date.today.strftime('%Y-%m-%d')
+    today = Date.today.strftime('%Y-%m-%d')
 
     Zip::File.open(@input_file) do |zip_file|
       zip_file.each do |entry|
@@ -137,7 +137,7 @@ class RMExportConverter < Converter
             :container_locations => [{
               :ref => loc_uri,
               :status => "current",
-              :start_date => rms_import_stamp,
+              :start_date => today,
             }],
           }
         }
@@ -157,7 +157,7 @@ class RMExportConverter < Converter
                       :instances => [instance],
                       :parent => {:ref => JSONModel::JSONModel(:archival_object).uri_for(parent.id, :repo_id => parent.repo_id)},
                       :resource => {:ref => resource_uris[values_map["BOXN"]]},
-                      :rms_import_stamp => rms_import_stamp,
+                      :rms_import_batch => today,
                     })
 
         @batch << ao_json
@@ -193,7 +193,7 @@ class RMExportConverter < Converter
                       :external_ids => [external_id],
                       :parent => {:ref => box_uris[values_map["BOXN"]]},
                       :resource => {:ref => resource_uris[values_map["BOXN"]]},
-                      :rms_import_stamp => rms_import_stamp,
+                      :rms_import_batch => today,
                     })
       end
     rescue StopIteration

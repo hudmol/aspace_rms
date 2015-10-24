@@ -1,3 +1,3 @@
 {
-  "rms_import_stamp" => {"type" => "string", "required" => false},
+  "rms_import_batch" => {"type" => "string", "required" => false},
 }

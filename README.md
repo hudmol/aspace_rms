@@ -30,14 +30,14 @@ like this:
 
 ## How to use it
 
-### RMS Import Stamp
+### rms_import_batch
 
 Resource Component (Archival Object) records have a new field
-'RMS Import Stamp' (rms_import_stamp). A value in this field is used
+rms_import_batch. A value in this field is used
 to identify a batch of imported records. The importer sets the value to
 today's date (YYYY-MM-DD). This value is indexed, allowing a search like this:
 
-      rms_import_stamp_u_sstr:2015-10-24
+      rms_import_batch_u_sstr:2015-10-24
 
 To return all records imported on October 24, 2015.
 
