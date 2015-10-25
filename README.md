@@ -2,6 +2,11 @@
 
 An ArchivesSpace plugin that adds integration with Dartmouth's Records Management System
 
+Note: This plugin depends on the Container Management Plugin:
+
+  https://github.com/hudmol/container_management_dartmouth
+
+
 ## How to install it
 
 To install, just activate the plugin in your config/config.rb file by
@@ -9,7 +14,7 @@ including an entry such as:
 
      # If you have other plugins loaded, just add 'box_search' to
      # the list
-     AppConfig[:plugins] = ['local', 'other_plugins', 'aspace_rms']
+     AppConfig[:plugins] = ['local', 'other_plugins', 'container_management', 'aspace_rms']
 
 And then clone the `box_search` repository into your
 ArchivesSpace plugins directory.  For example:
