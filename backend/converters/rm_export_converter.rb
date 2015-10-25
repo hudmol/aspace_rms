@@ -44,8 +44,6 @@ class RMExportConverter < Converter
     now = java.lang.System.currentTimeMillis
     box_file = File.join(Dir.tmpdir, "rm_export_box_#{now}")
     file_file = File.join(Dir.tmpdir, "rm_export_file_#{now}")
-    puts "box_file #{box_file}"
-    puts "file_file #{file_file}"
 
     box_sheet = nil
     file_sheet = nil
@@ -102,7 +100,7 @@ class RMExportConverter < Converter
               raise "No series archival_object found with external_id of #{values_map["Orig_SERN"]} for Box #{values_map["BOXN"]}"
             end
           end
-          # remember the archival_object for this Orig_SERN
+          # remember the archival object for this Orig_SERN so we don't have to get it again
           parent_aos[values_map["Orig_SERN"]] = ArchivalObject[ext_id[:archival_object_id]]
         end
 
