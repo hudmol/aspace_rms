@@ -5,3 +5,7 @@ en:
         add: Add External ID
   import_job:
     import_type_rm_export: Records Management Zipfile
+  reports:
+    RmsImportBatchReport: Records Management Import Batch
+    parameters:
+      batch: Batch
