@@ -57,5 +57,6 @@ class RmsImportBatchReport < AbstractReport
 
     dataset = dataset.where(Sequel.qualify(:archival_object, :repo_id) => @repo_id) if @repo_id
     dataset = dataset.where(Sequel.qualify(:archival_object, :rms_import_batch) => @batch)
+    dataset = dataset.where(Sequel.qualify(:archival_object, :other_level) => 'box')
   end
 end
