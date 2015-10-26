@@ -1,4 +1,3 @@
-require 'date'
 require 'rubyXL'
 require 'zip'
 
@@ -152,7 +151,7 @@ class RMExportConverter < Converter
         box_uris[values_map["BOXN"]] = uri
         resource_uris[values_map["BOXN"]] = JSONModel::JSONModel(:resource).uri_for(parent.root_record_id, :repo_id => parent.repo_id)
 
-        ao_json = JSONModel::JSONModel(:archival_object).
+        @batch << JSONModel::JSONModel(:archival_object).
           from_hash({
                       :uri => uri,
                       :title => values_map["BOXNAME"],
@@ -165,9 +164,6 @@ class RMExportConverter < Converter
                       :resource => {:ref => resource_uris[values_map["BOXN"]]},
                       :rms_import_batch => today,
                     })
-
-        @batch << ao_json
-        
       end
     rescue StopIteration
     end
