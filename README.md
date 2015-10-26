@@ -130,3 +130,14 @@ today's date (YYYY-MM-DD). This value is indexed, allowing a search like this:
 
 To return all records imported on October 24, 2015.
 
+
+### Records Management Import Batch Report
+
+This plugin introduces a new report. Select 'Reports' from the Repository menu,
+then click on 'Records Management Import Batch'. Enter a Batch date to select all boxes
+imported from Records Management on that day.
+
+The report has two columns:
+
+      BOXN:        The Records Management Number of the box
+      Description: "resource.identifier; Box Number: top_container.indicator; box.title"
