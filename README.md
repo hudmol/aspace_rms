@@ -32,6 +32,11 @@ like this:
       cd /path/to/archivesspace
       scripts/setup-database.sh
 
+And initialize the plugin like this:
+
+      cd /path/to/archivesspace
+      scripts/initialize-plugin.sh aspace_rms
+
 
 ## How to use it
 
