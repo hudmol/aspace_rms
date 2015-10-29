@@ -90,7 +90,8 @@ class RMExportConverter < Converter
         unless parent_aos[values_map["Orig_SERN"]]
           ext_id = ExternalId.select(:archival_object_id).
             where(:external_id => values_map["Orig_SERN"],
-                  :source => AppConfig[:container_management_rms_source]).first
+                  :source => AppConfig[:container_management_rms_source]).
+            exclude(archival_object_id: nil).first
           if ext_id.nil?
             if permit_partial
               p "No series Archival Object with #{values_map["Orig_SERN"]} for Box #{values_map["BOXN"]}, skipping ..."
