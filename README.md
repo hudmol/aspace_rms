@@ -117,13 +117,6 @@ To allow partial imports, set the following in config.rb:
 This will cause the row to be skipped, but allow the import to continue.
 
 
-### External IDs are editable
-
-This plugin makes external_ids editable. This makes it possible to set external_ids in
-series archival_object records that will match rows in the Box file.
-Note that the source must equal the value set in AppConfig[:container_management_rms_source]
-
- 
 ### archival_object.rms_import_batch
 
 Resource Component (Archival Object) records have a new field

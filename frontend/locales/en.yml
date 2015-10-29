@@ -1,8 +1,4 @@
 en:
-  external_id:
-    _frontend:
-      action:
-        add: Add External ID
   import_job:
     import_type_rm_export: Records Management Zipfile
   reports:
