@@ -81,7 +81,7 @@ class RMExportConverter < Converter
     # boxes
     rows = box_sheet.enum_for(:each)
     headers = row_values(rows.next)
-    # box headers: ["Orig_SERN", "BOXN", "Box Location", "BOXNAME", "BEGINDATE", "ENDDDATE"]
+    # box headers: ["Orig_SERN", "BOXN", "BOX_SEQ", "Box Location", "BOXNAME", "BEGINDATE", "ENDDDATE"]
 
     begin
       parent_aos = {}
@@ -145,7 +145,7 @@ class RMExportConverter < Converter
           :instance_type => "mixed_materials",
           :container => {
             :type_1 => "box",
-            :indicator_1 => values_map["BOXN"],
+            :indicator_1 => values_map["BOX_SEQ"],
             :container_locations => [{
               :ref => loc_uri,
               :status => "current",
