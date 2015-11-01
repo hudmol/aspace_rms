@@ -37,16 +37,23 @@ class RMExportConverter < Converter
 
 
   def run
-
+    # whether to allow some records to import if there are problems with other records
     permit_partial = AppConfig.has_key?(:records_management_import_permit_partial) && AppConfig[:records_management_import_permit_partial]
 
+    # tmp files to store the unzipped import files
     now = java.lang.System.currentTimeMillis
     box_file = File.join(Dir.tmpdir, "rm_export_box_#{now}")
     file_file = File.join(Dir.tmpdir, "rm_export_file_#{now}")
 
+    # the spreadsheets to import
     box_sheet = nil
     file_sheet = nil
 
+    # the reocrds to at to the import batch
+    box_batch = []
+    file_batch = []
+
+    # hashes to cache stuff
     box_uris = {}
     resource_uris = {}
 
@@ -152,7 +159,7 @@ class RMExportConverter < Converter
         box_uris[values_map["BOXN"]] = uri
         resource_uris[values_map["BOXN"]] = JSONModel::JSONModel(:resource).uri_for(parent.root_record_id, :repo_id => parent.repo_id)
 
-        @batch << JSONModel::JSONModel(:archival_object).
+        box_batch << JSONModel::JSONModel(:archival_object).
           from_hash({
                       :uri => uri,
                       :title => values_map["BOXNAME"],
@@ -169,6 +176,10 @@ class RMExportConverter < Converter
     rescue StopIteration
     end
 
+    # add the boxes to the import batch in reverse order
+    # this preserves the original order in the spreadsheet
+    # ... the importer reverses the batch order
+    box_batch.reverse.each {|box| @batch << box}
 
     # files
     rows = file_sheet.enum_for(:each)
@@ -197,7 +208,7 @@ class RMExportConverter < Converter
           :external_id => values_map["FILN"],
         }
 
-        @batch << JSONModel::JSONModel(:archival_object).
+        file_batch << JSONModel::JSONModel(:archival_object).
           from_hash({
                       :uri => "/repositories/12345/archival_objects/import_#{SecureRandom.hex}",
                       :title => values_map["FILNAME"],
@@ -210,6 +221,9 @@ class RMExportConverter < Converter
       end
     rescue StopIteration
     end
+
+    # as with the box batch, reverse it
+    file_batch.reverse.each {|file| @batch << file}
 
   end
 
