@@ -54,7 +54,7 @@ The file provided should be a zip that contains at least two files those names e
 
 The Box file should have the following columns:
 
-      "Orig_SERN", "BOXN", "Box Location", "BOXNAME", "BEGINDATE", "ENDDDATE"
+      "Orig_SERN", "BOXN", "BOX_SEQ", "Box Location", "BOXNAME", "BEGINDATE", "ENDDDATE"
 
 The File file should have the following columns:
 
@@ -73,7 +73,7 @@ Rows from the Box file will be imported as archival_objects with the following v
       external_ids:      [{source: container_management_rms_source, external_id: *BOXN*}]
       dates:             [{date_type: inclusive, label: creation, begin: *BEGINDATE*, end: *ENDDDATE*}]
       instances:         [{instance_type: mixed_materials,
-                            container: {type_1: box, indicator_1: *BOXN*,
+                            container: {type_1: box, indicator_1: *BOX_SEQ*,
                               container_location: {status: current, start_date: today, ref: location with coordinate_1_indicator: *Box Location*}}}]
       rms_import_batch:  today as YYYY-MM-DD
 
